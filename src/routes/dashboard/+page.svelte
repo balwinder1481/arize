@@ -23,12 +23,13 @@
   const HUB   = env.contracts.arizeBizHub   as `0x${string}`;
 
   // ── Typed state structs ───────────────────────────────────
-  let userId      = 0n;
-  let workingMult = 3;
+  let userId       = 0n;
+  let isRegistered = false;
+  let workingMult  = 3;
   let dayLength    = 86400;
-  let loading     = true;
-  let error       = '';
-  let txLoading   = false;
+  let loading      = true;
+  let error        = '';
+  let txLoading    = false;
 
   let income: IncomeData = {
     availableBal: 0n, totalWithdrawn: 0n,
@@ -78,7 +79,8 @@
         address: PROXY, abi: arizeBizV2Abi, functionName: 'addrToId', args: [$address],
       }) as unknown as bigint;
       userId = uid;
-      if (uid === 0n) { loading = false; return; }
+      isRegistered = uid > 0n;
+      if (!isRegistered) { loading = false; return; }
       const id = Number(uid);
 
       // 2. Parallel reads
@@ -200,7 +202,7 @@
 
   let lastAddr = '';
   $: if ($address && $address !== lastAddr) { lastAddr = $address; loadData(); }
-  $: if (!$isConnected) { lastAddr = ''; loading = false; }
+  $: if (!$isConnected) { lastAddr = ''; loading = false; userId = 0n; isRegistered = false; }
 
   onMount(async () => {
     await initWeb3();
@@ -239,7 +241,7 @@
       <div class="gold-text animate-pulse text-xl">Loading…</div>
     </div>
 
-  {:else if userId === 0n}
+  {:else if !isRegistered}
     <!-- ── Full-page: Not Registered ── -->
     <div class="flex min-h-screen items-center justify-center px-4">
       <div class="card w-full max-w-sm p-10 text-center">
