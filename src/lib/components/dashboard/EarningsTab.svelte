@@ -4,13 +4,13 @@
   import type { IncomeData } from '$lib/types/dashboard';
 
   export let income: IncomeData;
-  export let txLoading = false;
+  export let txLoading  = false;
   export let readonly   = false;
+  export let withdrawFee = 0;  // bps e.g. 1000 = 10%
 
   let withdrawAmt = '';
 
   const dispatch = createEventDispatcher<{
-    claimROI:    void;
     checkRank:   void;
     claimSalary: void;
     withdraw:    { amount: string };
@@ -56,18 +56,6 @@
   </div>
 
   {#if !readonly}
-  <!-- Claim ROI -->
-  <div class="card p-5">
-    <h3 class="mb-3 font-bold text-text-primary">Claim ROI to Balance</h3>
-    <p class="mb-3 text-sm text-text-muted">
-      Moves your pending ROI earnings to your withdrawable balance.
-    </p>
-    <button on:click={() => dispatch('claimROI')} disabled={txLoading}
-            class="btn-primary w-full py-2.5">
-      {txLoading ? 'Processing…' : 'Claim ROI'}
-    </button>
-  </div>
-
   <!-- Rewards -->
   <div class="card p-5">
     <h3 class="mb-1 font-bold text-text-primary">Rewards</h3>
@@ -107,7 +95,18 @@
         {txLoading ? '…' : 'Send'}
       </button>
     </div>
-    <div class="mt-2 flex justify-end">
+    <div class="mt-2 flex items-center justify-between">
+      <div class="text-xs text-text-muted">
+        {#if withdrawFee > 0 && withdrawAmt}
+          Fee: <span class="text-amber-400">{(withdrawFee / 100).toFixed(1)}%</span>
+          &nbsp;→&nbsp;You receive:
+          <span class="font-bold" style="color:#22c55e">
+            ${(parseFloat(withdrawAmt) * (1 - withdrawFee / 10000)).toFixed(2)} USDT
+          </span>
+        {:else if withdrawFee > 0}
+          Withdrawal fee: <span class="text-amber-400">{(withdrawFee / 100).toFixed(1)}%</span>
+        {/if}
+      </div>
       <button class="text-xs text-text-muted underline"
               on:click={() => { withdrawAmt = (Number(formatUnits(income.availableBal, 18))).toFixed(2); }}>
         Max

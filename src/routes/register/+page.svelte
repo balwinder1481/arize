@@ -17,9 +17,10 @@
   // ── State ──────────────────────────────────────────────────
   let referrerId       = '';
   let amountWei        = 0n;
-  let minInvestWei     = 100n * 10n**18n;
-  let maxInvestWei     = 1000n * 10n**18n;
-  let multipleWei      = 100n * 10n**18n;
+  let minInvestWei     = 0n;
+  let maxInvestWei     = 0n;
+  let multipleWei      = 0n;
+  let configLoading    = true;
   let loading          = false;
   let registrationDone = false;
   let newUserId: bigint = 0n;
@@ -123,7 +124,8 @@
       maxInvestWei = ma as bigint;
       multipleWei  = mul as bigint;
       amountWei    = mi as bigint;
-    } catch { amountWei = minInvestWei; }
+    } catch { /* ignore */ }
+    configLoading = false;
 
   });
 
@@ -357,9 +359,9 @@
 
             <!-- Submit -->
             <button on:click={handleSubmit}
-                    disabled={loading || insufficientUsdt || insufficientBnb || !referrerId || refValid !== true || refChecking}
+                    disabled={loading || configLoading || insufficientUsdt || insufficientBnb || !referrerId || refValid !== true || refChecking}
                     class="btn-primary w-full py-3 text-base font-bold">
-              {loading ? 'Processing…' : `Register & Invest · $${fmtAmt(amountWei)} USDT`}
+              {loading ? 'Processing…' : configLoading ? 'Loading…' : `Register & Invest · $${fmtAmt(amountWei)} USDT`}
             </button>
 
             <p class="text-center text-xs text-text-muted">

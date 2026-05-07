@@ -26,6 +26,7 @@
   let userId       = 0n;
   let isRegistered = false;
   let workingMult  = 3;
+  let withdrawFee  = 0;
   let dayLength    = 86400;
   let loading      = true;
   let error        = '';
@@ -84,13 +85,15 @@
       const id = Number(uid);
 
       // 2. Parallel reads
-      const [inc, ui, wm, dl] = await Promise.all([
+      const [inc, ui, wm, dl, wf] = await Promise.all([
         readContract(wagmiConfig, { address: PROXY, abi: arizeBizV2Abi, functionName: 'incomeInfo',        args: [id] }),
         readContract(wagmiConfig, { address: PROXY, abi: arizeBizV2Abi, functionName: 'userInfo',          args: [id] }),
         readContract(wagmiConfig, { address: PROXY, abi: arizeBizV2Abi, functionName: 'workingMultiplier', args: [] }),
         readContract(wagmiConfig, { address: PROXY, abi: arizeBizV2Abi, functionName: 'dayLength',        args: [] }),
+        readContract(wagmiConfig, { address: PROXY, abi: arizeBizV2Abi, functionName: 'withdrawFee',      args: [] }),
       ]);
-      dayLength = Number(dl) || 86400;
+      dayLength   = Number(dl) || 86400;
+      withdrawFee = Number(wf) || 0;
 
       const i = inc as unknown as [bigint, bigint, bigint, bigint, bigint, bigint];
       // [0]=availableBalance [1]=totalWithdrawn [2]=totalRoi [3]=totalReferral [4]=totalLevel [5]=totalSalary
@@ -314,8 +317,7 @@
           on:claimROI={claimROI} />
 
       {:else if activeTab === 'earnings'}
-        <EarningsTab {income} {txLoading}
-          on:claimROI={claimROI}
+        <EarningsTab {income} {txLoading} {withdrawFee}
           on:checkRank={checkRank}
           on:claimSalary={claimSalary}
           on:withdraw={(e) => handleWithdraw(e.detail.amount)} />
