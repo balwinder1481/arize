@@ -27,8 +27,8 @@
     active: boolean;
     pendingDays: number;
   }
-  const RANK_TARGETS = ['$5,000', '$15,000', '$55,000', '$1,55,000', '$6,55,000', '$26,55,000'];
-  const RANK_PERDAY  = [5n * BigInt(1e18), 10n * BigInt(1e18), 40n * BigInt(1e18), 100n * BigInt(1e18), 500n * BigInt(1e18), 2000n * BigInt(1e18)];
+  const RANK_TARGETS = ['$2,500', '$7,500', '$17,500', '$37,500', '$87,500', '$1,87,500', '$3,87,500', '$8,87,500', '$18,87,500', '$38,87,500'];
+  const RANK_PERDAY  = [25n * BigInt(1e17), 5n * BigInt(1e18), 10n * BigInt(1e18), 20n * BigInt(1e18), 50n * BigInt(1e18), 125n * BigInt(1e18), 250n * BigInt(1e18), 750n * BigInt(1e18), 1500n * BigInt(1e18), 3000n * BigInt(1e18)];
 
   let rankSlots: RankSlot[] = [];
   let rankLoading = false;

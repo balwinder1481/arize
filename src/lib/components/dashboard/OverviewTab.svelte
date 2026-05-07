@@ -25,7 +25,7 @@
 
   // ── Tx History ──────────────────────────────────────────────
   const TX_PAGE  = 10;
-  const TX_TYPES  = ['Invest','Referral','Level','ROI','Salary','Withdraw'];
+  const TX_TYPES  = ['Invest','Referral','Level','ROI','Rank','Withdraw'];
   const TX_COLORS = ['#f59e0b','#3b82f6','#a78bfa','#22c55e','#e879f9','#ef4444'];
   type TxRow = { amount: bigint; from: number; to: number; time: number; txType: number; };
 
@@ -102,7 +102,7 @@
         { label:'Daily ROI',    val: income.totalRoi,      c:'#22c55e' },
         { label:'Referral',     val: income.totalReferral, c:'#3b82f6' },
         { label:'Level',        val: income.totalLevel,    c:'#f59e0b' },
-        { label:'Salary',       val: income.totalSalary,   c:'#a78bfa' },
+        { label:'Rank Reward',  val: income.totalSalary,   c:'#a78bfa' },
       ] as s}
         <div class="rounded-xl px-3 py-2.5 text-center" style="background:var(--color-surface-3)">
           <div class="text-base font-bold" style="color:{s.c}">${fmt(s.val)}</div>
@@ -111,6 +111,7 @@
       {/each}
     </div>
   </div>
+
 </div>
 
 <!-- Transaction History -->
@@ -157,7 +158,7 @@
             {:else if tx.txType === 3}
               <span>ROI credited by system</span>
             {:else if tx.txType === 4}
-              <span>Salary credited by system</span>
+              <span>Rank reward credited by system</span>
             {:else if tx.txType === 5}
               <span>Withdrawn to wallet</span>
             {/if}

@@ -609,8 +609,8 @@ export const arizeBizV2Abi = [
     "outputs": [
       {
         "name": "",
-        "type": "tuple[6]",
-        "internalType": "struct ArizeBizV2.SalaryInfo[6]",
+        "type": "tuple[10]",
+        "internalType": "struct ArizeBizV2.SalaryInfo[10]",
         "components": [
           {
             "name": "salaryPerDay",

@@ -25,8 +25,8 @@ const MAINNET_CONFIG = {
   chainId: 56,
   chainName: 'BNB Smart Chain',
   contracts: {
-    arizeBizProxy: '0xE639ED8335Fd20F083dAF05Ebe2fafD01617FA4e',
-    arizeBizHub:   '0x8116083B070C2DEfe42ed4Fe36a43Ae4D3470Aa0',
+    arizeBizProxy: '0x63420A496e5689A9164f777c2Bf107cC5AD92898',
+    arizeBizHub:   '0x5143d2960e6722BDe21c37a97a3Ba34D3f30db85',
     usdt:          '0x55d398326f99059fF775485246999027B3197955',
   },
   admins: [
