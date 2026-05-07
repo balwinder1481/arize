@@ -1,0 +1,158 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500&display=swap');
+@import "tailwindcss";
+
+/* =============================================
+   DESIGN TOKENS — Dark + Gold/Amber Theme
+   ============================================= */
+@theme {
+  /* Backgrounds */
+  --color-surface:        #0a0a0f;
+  --color-surface-2:      #111118;
+  --color-surface-3:      #18181f;
+  --color-surface-4:      #1e1e28;
+  --color-card:           #13131a;
+  --color-card-hover:     #1a1a24;
+
+  /* Gold / Amber — primary accent */
+  --color-gold:           #f59e0b;
+  --color-gold-light:     #fbbf24;
+  --color-gold-dark:      #d97706;
+  --color-gold-dim:       rgba(245,158,11,0.12);
+  --color-gold-glow:      rgba(245,158,11,0.25);
+
+  /* Text */
+  --color-text-primary:   #f5f0e8;
+  --color-text-secondary: #a8a090;
+  --color-text-muted:     #5a5450;
+
+  /* Borders */
+  --color-border:         rgba(245,158,11,0.15);
+  --color-border-strong:  rgba(245,158,11,0.35);
+
+  /* Status */
+  --color-success:        #22c55e;
+  --color-error:          #ef4444;
+  --color-warning:        #f59e0b;
+  --color-info:           #3b82f6;
+
+  /* Fonts */
+  --font-heading: 'Montserrat', sans-serif;
+  --font-body:    'Inter', sans-serif;
+}
+
+/* =============================================
+   BASE
+   ============================================= */
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+}
+
+/* =============================================
+   UTILITIES / COMPONENTS
+   ============================================= */
+@layer utilities {
+  .gold-text {
+    color: var(--color-gold);
+  }
+
+  .gold-gradient {
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #d97706 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .card {
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+  }
+
+  .card-hover {
+    transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .card-hover:hover {
+    background-color: var(--color-card-hover);
+    border-color: var(--color-border-strong);
+    box-shadow: 0 0 24px var(--color-gold-glow);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #0a0a0f;
+    font-weight: 700;
+    border-radius: 0.625rem;
+    padding: 0.625rem 1.5rem;
+    transition: opacity 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    border: none;
+    font-family: var(--font-heading);
+  }
+
+  .btn-primary:hover {
+    opacity: 0.92;
+    box-shadow: 0 0 20px var(--color-gold-glow);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--color-gold);
+    border: 1px solid var(--color-border-strong);
+    font-weight: 600;
+    border-radius: 0.625rem;
+    padding: 0.625rem 1.5rem;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    font-family: var(--font-heading);
+  }
+
+  .btn-outline:hover {
+    background-color: var(--color-gold-dim);
+    box-shadow: 0 0 16px var(--color-gold-glow);
+  }
+
+  .gold-border {
+    border: 1px solid var(--color-border-strong);
+    box-shadow: 0 0 12px var(--color-gold-dim);
+  }
+
+  .section-title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .glass {
+    background: rgba(19, 19, 26, 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--color-border);
+  }
+}
+
