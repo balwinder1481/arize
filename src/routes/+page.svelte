@@ -8,6 +8,10 @@
   import RoadmapSection    from '$lib/components/landing/RoadmapSection.svelte';
   import FAQSection        from '$lib/components/landing/FAQSection.svelte';
   import BottomNavigation  from '$lib/components/landing/BottomNavigation.svelte';
+  import { env } from '$lib/constants/env';
+
+  const hubAddr   = env.contracts.arizeBizHub;
+  const bscScanUrl = `https://bscscan.com/address/${hubAddr}`;
 </script>
 
 <svelte:head>
@@ -37,8 +41,8 @@
         <span class="font-bold text-text-primary">Arize<span class="gold-text">Biz</span></span>
       </div>
       <p class="text-sm text-text-muted">
-        © 2025 ArizeBiz · All rights reserved ·
-        <a href="https://testnet.bscscan.com/address/0x8116083B070C2DEfe42ed4Fe36a43Ae4D3470Aa0"
+        © 2026 ArizeBiz · All rights reserved ·
+        <a href={bscScanUrl}
            target="_blank" rel="noopener"
            class="text-gold hover:underline">Contract on BSCScan</a>
       </p>

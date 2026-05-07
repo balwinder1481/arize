@@ -266,17 +266,27 @@
 
   {:else}
     <!-- ── Full dashboard (connected + registered) ── -->
-    <header class="glass sticky top-0 z-40 flex items-center justify-between px-4 py-3">
-      <a href="/" class="flex items-center gap-2">
-        <div class="flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold text-black"
-             style="background:linear-gradient(135deg,#f59e0b,#d97706)">AB</div>
-        <span class="font-bold">Arize<span class="gold-text">Biz</span></span>
-      </a>
-      <div class="flex items-center gap-2">
-        <button on:click={() => loadData()} class="btn-outline px-3 py-1.5 text-xs" title="Refresh">↻</button>
+    <div class="sticky top-0 z-40 flex justify-center px-4 py-3"
+         style="background:transparent">
+      <header class="flex items-center gap-3 rounded-full px-3 py-2"
+              style="background:rgba(17,17,24,0.92);backdrop-filter:blur(16px);border:1px solid rgba(245,158,11,0.2);box-shadow:0 8px 32px rgba(0,0,0,0.4)">
+        <a href="/" class="flex items-center gap-2 rounded-full px-2 py-1 transition-colors hover:bg-white/5">
+          <div class="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-black"
+               style="background:linear-gradient(135deg,#f59e0b,#d97706)">AB</div>
+          <span class="text-sm font-bold">Arize<span class="gold-text">Biz</span></span>
+        </a>
+        <div class="h-5 w-px" style="background:rgba(245,158,11,0.2)"></div>
+        <button on:click={() => loadData()}
+                class="flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-semibold text-text-muted transition-colors hover:text-gold"
+                style="background:var(--color-surface-3)" title="Refresh">
+          <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          Refresh
+        </button>
         <WalletButton size="sm" />
-      </div>
-    </header>
+      </header>
+    </div>
 
     <div class="mx-auto max-w-5xl px-4 py-6 pb-20">
       <!-- User info bar -->

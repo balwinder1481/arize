@@ -1,84 +1,31 @@
-<script lang="ts">
-  import { isConnected } from '$lib/web3/store';
-  import WalletButton from '$lib/components/WalletButton.svelte';
-
-  let mobileOpen = false;
-
-  const navLinks = [
-    { label: 'Features',     href: '#features'     },
-    { label: 'How It Works', href: '#how-it-works' },
-    { label: 'Benefits',     href: '#benefits'     },
-    { label: 'Roadmap',      href: '#roadmap'      },
-    { label: 'FAQ',          href: '#faq'          },
-  ];
-</script>
-
-<header class="glass sticky top-0 z-50 px-4 py-3">
-  <nav class="mx-auto flex max-w-6xl items-center justify-between">
+<header class="fixed top-4 left-1/2 z-50 -translate-x-1/2 w-auto">
+  <nav class="flex items-center gap-3 rounded-full px-3 py-2"
+       style="background:rgba(17,17,24,0.92);backdrop-filter:blur(16px);border:1px solid rgba(245,158,11,0.2);box-shadow:0 8px 32px rgba(0,0,0,0.4),0 0 0 1px rgba(255,255,255,0.04)">
     <!-- Logo -->
-    <a href="/" class="flex items-center gap-2">
-      <div class="flex h-9 w-9 items-center justify-center rounded-xl"
+    <a href="/" class="flex items-center gap-2 rounded-full px-2 py-1 transition-colors hover:bg-white/5">
+      <div class="flex h-7 w-7 items-center justify-center rounded-full"
            style="background: linear-gradient(135deg, #f59e0b, #d97706);">
-        <span class="text-sm font-bold text-black">AB</span>
+        <span class="text-xs font-bold text-black">AB</span>
       </div>
-      <span class="font-heading text-lg font-bold text-text-primary">
+      <span class="font-heading text-sm font-bold text-text-primary">
         Arize<span class="gold-text">Biz</span>
       </span>
     </a>
 
-    <!-- Desktop nav -->
-    <ul class="hidden items-center gap-6 md:flex">
-      {#each navLinks as link}
-        <li>
-          <a href={link.href}
-             class="text-sm font-medium text-text-secondary transition-colors hover:text-gold">
-            {link.label}
-          </a>
-        </li>
-      {/each}
-    </ul>
+    <!-- Divider -->
+    <div class="h-5 w-px" style="background:rgba(245,158,11,0.2)"></div>
 
-    <!-- Wallet button -->
-    <div class="flex items-center gap-3">
-      <WalletButton size="sm" />
-
-      <!-- Mobile hamburger -->
-      <button class="md:hidden text-text-secondary hover:text-gold"
-              on:click={() => mobileOpen = !mobileOpen}>
-        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          {#if mobileOpen}
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M6 18L18 6M6 6l12 12"/>
-          {:else}
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M4 6h16M4 12h16M4 18h16"/>
-          {/if}
-        </svg>
-      </button>
-    </div>
+    <!-- Dashboard link -->
+    <a href="/dashboard"
+       class="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all duration-200 hover:text-black"
+       style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;box-shadow:0 0 12px rgba(245,158,11,0.3)">
+      <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+      </svg>
+      Dashboard
+    </a>
   </nav>
-
-  <!-- Mobile menu -->
-  {#if mobileOpen}
-    <div class="mt-3 border-t border-border pb-3 md:hidden">
-      <ul class="mt-3 flex flex-col gap-1">
-        {#each navLinks as link}
-          <li>
-            <a href={link.href}
-               class="block px-4 py-2 text-sm text-text-secondary hover:text-gold"
-               on:click={() => mobileOpen = false}>
-              {link.label}
-            </a>
-          </li>
-        {/each}
-        {#if $isConnected}
-          <li>
-            <a href="/dashboard" class="block px-4 py-2 text-sm text-gold font-medium">
-              Dashboard
-            </a>
-          </li>
-        {/if}
-      </ul>
-    </div>
-  {/if}
 </header>
+
+<!-- Spacer so content doesn't hide under fixed header -->
+<div class="h-16"></div>
