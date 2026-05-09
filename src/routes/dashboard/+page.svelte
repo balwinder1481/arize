@@ -304,6 +304,43 @@
         </span>
       </div>
 
+      <!-- Active Package Card -->
+      {#if packages.length > 0}
+        {@const pkg = packages[packages.length - 1]}
+        {@const dailyAmount = (pkg.amount * BigInt(pkg.dailyRoi)) / 10000n}
+        {@const daysRunning = Math.floor((Date.now() / 1000 - pkg.startTime) / 86400)}
+        {@const roiPending = dailyAmount * BigInt(Math.max(0, daysRunning - pkg.daysClaimed))}
+        <div class="card mb-6 p-5" style="border-left:3px solid #f59e0b">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-bold text-text-secondary uppercase tracking-wide">Active Package</h3>
+            <span class="px-2 py-0.5 rounded-full text-xs font-bold {pkg.isActive ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">
+              {pkg.isActive ? 'ACTIVE' : 'EXPIRED'}
+            </span>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div>
+              <div class="text-xs text-text-muted mb-1">Invested</div>
+              <div class="text-xl font-bold gold-text">${fmt(pkg.amount)}</div>
+            </div>
+            <div>
+              <div class="text-xs text-text-muted mb-1">Daily ROI ({(pkg.dailyRoi / 100).toFixed(2)}%)</div>
+              <div class="text-xl font-bold" style="color:#22c55e">${fmt(dailyAmount)}</div>
+            </div>
+            <div>
+              <div class="text-xs text-text-muted mb-1">Days Running</div>
+              <div class="text-xl font-bold" style="color:#3b82f6">{daysRunning}</div>
+            </div>
+            <div>
+              <div class="text-xs text-text-muted mb-1">ROI Pending</div>
+              <div class="text-xl font-bold" style="color:#a78bfa">${fmt(roiPending)}</div>
+            </div>
+          </div>
+          <div class="mt-3 text-xs text-text-muted">
+            Started {new Date(pkg.startTime * 1000).toLocaleDateString('en-IN')} • {pkg.daysClaimed} days claimed
+          </div>
+        </div>
+      {/if}
+
       <!-- Stats row -->
       <div class="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {#each [

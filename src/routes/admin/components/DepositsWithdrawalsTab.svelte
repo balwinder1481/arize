@@ -156,20 +156,20 @@
     {:else if error}
       <div class="card p-4 text-center text-sm text-error">{error}</div>
     {:else if today}
-      <div class="grid grid-cols-3 gap-4">
-        <div class="card p-5 text-center">
+      <div class="grid gap-4 sm:grid-cols-3">
+        <div class="card p-4 sm:p-5 text-center">
           <div class="mb-1 text-xs text-text-muted">Deposits</div>
-          <div class="text-3xl font-bold" style="color:#36FF6F">{fmt(today.deposits)}</div>
+          <div class="text-xl sm:text-3xl font-bold" style="color:#36FF6F">{fmt(today.deposits)}</div>
           <div class="mt-1 text-xs" style="color:#36FF6F66">Packages Purchased</div>
         </div>
-        <div class="card p-5 text-center">
+        <div class="card p-4 sm:p-5 text-center">
           <div class="mb-1 text-xs text-text-muted">Withdrawals</div>
-          <div class="text-3xl font-bold" style="color:#FF8C42">{fmt(today.withdrawals)}</div>
+          <div class="text-xl sm:text-3xl font-bold" style="color:#FF8C42">{fmt(today.withdrawals)}</div>
           <div class="mt-1 text-xs" style="color:#FF8C4266">Gross Amount</div>
         </div>
-        <div class="card p-5 text-center">
+        <div class="card p-4 sm:p-5 text-center">
           <div class="mb-1 text-xs text-text-muted">Net Flow</div>
-          <div class="text-3xl font-bold" style="color:{netPositive ? '#00FFE7' : '#FF5833'}">
+          <div class="text-xl sm:text-3xl font-bold" style="color:{netPositive ? '#00FFE7' : '#FF5833'}">
             {netPositive ? '+' : '−'}{fmt(netPositive ? netToday : -netToday)}
           </div>
           <div class="mt-1 text-xs" style="color:{netPositive ? '#00FFE766' : '#FF583366'}">
@@ -217,26 +217,26 @@
       <div class="card p-4 text-center text-sm text-error">{error}</div>
     {:else}
       <!-- 30-day summary totals -->
-      <div class="grid grid-cols-3 gap-4">
-        <div class="card p-4 text-center">
+      <div class="grid gap-4 sm:grid-cols-3">
+        <div class="card p-3 sm:p-4 text-center">
           <div class="text-xs text-text-muted mb-1">30-Day Deposits</div>
-          <div class="text-2xl font-bold" style="color:#36FF6F">{fmt(totalDepH)}</div>
+          <div class="text-lg sm:text-2xl font-bold" style="color:#36FF6F">{fmt(totalDepH)}</div>
         </div>
-        <div class="card p-4 text-center">
+        <div class="card p-3 sm:p-4 text-center">
           <div class="text-xs text-text-muted mb-1">30-Day Withdrawals</div>
-          <div class="text-2xl font-bold" style="color:#FF8C42">{fmt(totalWithH)}</div>
+          <div class="text-lg sm:text-2xl font-bold" style="color:#FF8C42">{fmt(totalWithH)}</div>
         </div>
-        <div class="card p-4 text-center">
+        <div class="card p-3 sm:p-4 text-center">
           <div class="text-xs text-text-muted mb-1">Net Flow</div>
-          <div class="text-2xl font-bold" style="color:{netPositiveH ? '#00FFE7' : '#FF5833'}">
+          <div class="text-lg sm:text-2xl font-bold" style="color:{netPositiveH ? '#00FFE7' : '#FF5833'}">
             {netPositiveH ? '+' : '−'}{fmt(netPositiveH ? netH : -netH)}
           </div>
         </div>
       </div>
 
       <!-- Table -->
-      <div class="overflow-hidden rounded-2xl border border-border">
-        <table class="w-full text-sm">
+      <div class="overflow-x-auto rounded-2xl border border-border">
+        <table class="w-full min-w-[500px] text-sm">
           <thead>
             <tr style="background:var(--color-surface-3)">
               <th class="px-4 py-3 text-left text-xs text-text-muted">Date (IST)</th>
