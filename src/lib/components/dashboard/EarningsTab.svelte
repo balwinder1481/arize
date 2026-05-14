@@ -16,14 +16,27 @@
     withdraw:    { amount: string };
   }>();
 
-  function fmt(val: bigint, dec = 18) {
-    return Number(formatUnits(val, dec)).toLocaleString('en-US', {
-      minimumFractionDigits: 2, maximumFractionDigits: 2,
-    });
+  function fmt(val: bigint | null | undefined, dec = 18) {
+    if (val === null || val === undefined) return '0.00';
+    try {
+      return Number(formatUnits(val, dec)).toLocaleString('en-US', {
+        minimumFractionDigits: 2, maximumFractionDigits: 2,
+      });
+    } catch {
+      return '0.00';
+    }
   }
 
   function handleWithdraw() {
-    if (!withdrawAmt) return;
+    if (!withdrawAmt || !/^[0-9]*\.?[0-9]+$/.test(withdrawAmt)) {
+      alert('Please enter a valid amount');
+      return;
+    }
+    const num = parseFloat(withdrawAmt);
+    if (isNaN(num) || num <= 0) {
+      alert('Please enter a positive amount');
+      return;
+    }
     dispatch('withdraw', { amount: withdrawAmt });
     withdrawAmt = '';
   }
@@ -108,7 +121,10 @@
         {/if}
       </div>
       <button class="text-xs text-text-muted underline"
-              on:click={() => { withdrawAmt = (Number(formatUnits(income.availableBal, 18))).toFixed(2); }}>
+              on:click={() => { 
+                if (!income.availableBal) return;
+                withdrawAmt = (Number(formatUnits(income.availableBal, 18))).toFixed(2); 
+              }}>
         Max
       </button>
     </div>

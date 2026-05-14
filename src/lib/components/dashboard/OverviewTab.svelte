@@ -15,10 +15,15 @@
   const dispatch = createEventDispatcher<{ claimROI: void; refresh: void }>();
   const PROXY = env.contracts.arizeBizProxy as `0x${string}`;
 
-  function fmt(val: bigint, dec = 18) {
-    return Number(formatUnits(val, dec)).toLocaleString('en-US', {
-      minimumFractionDigits: 2, maximumFractionDigits: 2,
-    });
+  function fmt(val: bigint | null | undefined, dec = 18) {
+    if (val === null || val === undefined) return '0.00';
+    try {
+      return Number(formatUnits(val, dec)).toLocaleString('en-US', {
+        minimumFractionDigits: 2, maximumFractionDigits: 2,
+      });
+    } catch {
+      return '0.00';
+    }
   }
 
   $: totalEarned = income.totalRoi + income.totalReferral + income.totalLevel + income.totalSalary;

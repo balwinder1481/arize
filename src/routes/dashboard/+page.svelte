@@ -46,10 +46,15 @@
     business: Array.from({ length: 10 }, () => 0n),
   };
 
-  function fmt(val: bigint, dec = 18) {
-    return Number(formatUnits(val, dec)).toLocaleString('en-US', {
-      minimumFractionDigits: 2, maximumFractionDigits: 2,
-    });
+  function fmt(val: bigint | null | undefined, dec = 18) {
+    if (val === null || val === undefined) return '0.00';
+    try {
+      return Number(formatUnits(val, dec)).toLocaleString('en-US', {
+        minimumFractionDigits: 2, maximumFractionDigits: 2,
+      });
+    } catch {
+      return '0.00';
+    }
   }
 
   const CONTRACT_ERRORS: Record<string, string> = {
@@ -170,7 +175,11 @@
   }
 
   async function handleWithdraw(amount: string) {
-    if (!amount) { toast.error('Enter amount'); return; }
+    if (!amount || !/^[0-9]*\.?[0-9]+$/.test(amount)) {
+      toast.error('Enter a valid amount'); return;
+    }
+    const num = parseFloat(amount);
+    if (isNaN(num) || num <= 0) { toast.error('Enter a positive amount'); return; }
     txLoading = true;
     const id = toast.loading('Withdrawing…');
     try {

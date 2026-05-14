@@ -45,10 +45,15 @@
     business: Array.from({ length: 10 }, () => 0n),
   };
 
-  function fmt(val: bigint, dec = 18) {
-    return Number(formatUnits(val, dec)).toLocaleString('en-US', {
-      minimumFractionDigits: 2, maximumFractionDigits: 2,
-    });
+  function fmt(val: bigint | null | undefined, dec = 18) {
+    if (val === null || val === undefined) return '0.00';
+    try {
+      return Number(formatUnits(val, dec)).toLocaleString('en-US', {
+        minimumFractionDigits: 2, maximumFractionDigits: 2,
+      });
+    } catch {
+      return '0.00';
+    }
   }
 
   function short(addr: string) {

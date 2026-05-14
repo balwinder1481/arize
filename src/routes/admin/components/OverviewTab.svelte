@@ -93,8 +93,13 @@
   $: safeWithdraw   = surplus;
 
   // ── Helpers ───────────────────────────────────────────────
-  function fmt(val: bigint) {
-    return Number(formatUnits(val, 18)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  function fmt(val: bigint | null | undefined) {
+    if (val === null || val === undefined) return '0.00';
+    try {
+      return Number(formatUnits(val, 18)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    } catch {
+      return '0.00';
+    }
   }
   function tx(msg: string, err = false) { if (err) toast.error(msg); else toast.info(msg); }
   function shortAddr(a: string) { return a.slice(0, 6) + '…' + a.slice(-4); }
