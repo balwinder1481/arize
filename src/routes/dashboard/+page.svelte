@@ -66,6 +66,7 @@
   };
 
   function parseContractError(e: unknown): string {
+    console.log('DEBUG parseContractError:', e, typeof e, JSON.stringify(e));
     const msg = e instanceof Error ? e.message : String(e);
     for (const [key, friendly] of Object.entries(CONTRACT_ERRORS)) {
       if (msg.includes(key)) return friendly;
@@ -175,6 +176,7 @@
   }
 
   async function handleWithdraw(amount: string) {
+    console.log('DEBUG handleWithdraw amount:', amount, typeof amount);
     if (!amount || !/^[0-9]*\.?[0-9]+$/.test(amount)) {
       toast.error('Enter a valid amount'); return;
     }
@@ -183,7 +185,10 @@
     txLoading = true;
     const id = toast.loading('Withdrawing…');
     try {
-      const tx = await writeContractWithGas({ address: HUB, abi: arizeBizHubAbi, functionName: 'withdraw', args: [parseUnits(amount, 18)] });
+      console.log('DEBUG calling parseUnits with:', amount);
+      const parsed = parseUnits(String(amount), 18);
+      console.log('DEBUG parsed amount:', parsed);
+      const tx = await writeContractWithGas({ address: HUB, abi: arizeBizHubAbi, functionName: 'withdraw', args: [parsed] });
       await waitForTransactionReceipt(getWagmiConfig()!, { hash: tx });
       toast.success('Withdrawn successfully!', { id }); await loadData();
     } catch (e: unknown) { toast.error(parseContractError(e), { id }); }

@@ -62,6 +62,34 @@ export const arizeBizV2Abi = [
   },
   {
     "type": "function",
+    "name": "adminRegister",
+    "inputs": [
+      {
+        "name": "_forUser",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_referrerId",
+        "type": "uint32",
+        "internalType": "uint32"
+      },
+      {
+        "name": "_amount",
+        "type": "uint128",
+        "internalType": "uint128"
+      },
+      {
+        "name": "_dailyRoi",
+        "type": "uint16",
+        "internalType": "uint16"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "allUserIds",
     "inputs": [
       {
@@ -200,13 +228,6 @@ export const arizeBizV2Abi = [
   {
     "type": "function",
     "name": "checkRank",
-    "inputs": [],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "checkRank",
     "inputs": [
       {
         "name": "_user",
@@ -227,20 +248,6 @@ export const arizeBizV2Abi = [
         "internalType": "address"
       }
     ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "claimROI",
-    "inputs": [],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "claimSalary",
-    "inputs": [],
     "outputs": [],
     "stateMutability": "nonpayable"
   },
@@ -598,6 +605,24 @@ export const arizeBizV2Abi = [
   },
   {
     "type": "function",
+    "name": "getRankConfig",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "targets",
+        "type": "uint128[10]",
+        "internalType": "uint128[10]"
+      },
+      {
+        "name": "perDay",
+        "type": "uint128[10]",
+        "internalType": "uint128[10]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "getRankSalaries",
     "inputs": [
       {
@@ -657,6 +682,81 @@ export const arizeBizV2Abi = [
         "name": "business",
         "type": "uint128[10]",
         "internalType": "uint128[10]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getTxCount",
+    "inputs": [
+      {
+        "name": "_uid",
+        "type": "uint32",
+        "internalType": "uint32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getTxHistory",
+    "inputs": [
+      {
+        "name": "_uid",
+        "type": "uint32",
+        "internalType": "uint32"
+      },
+      {
+        "name": "_offset",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_limit",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "records",
+        "type": "tuple[]",
+        "internalType": "struct ArizeBizV2.TxRecord[]",
+        "components": [
+          {
+            "name": "amount",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "from",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "to",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "time",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "txType",
+            "type": "uint8",
+            "internalType": "uint8"
+          }
+        ]
       }
     ],
     "stateMutability": "view"
@@ -787,24 +887,6 @@ export const arizeBizV2Abi = [
       }
     ],
     "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "invest",
-    "inputs": [
-      {
-        "name": "_forUserId",
-        "type": "uint32",
-        "internalType": "uint32"
-      },
-      {
-        "name": "_amount",
-        "type": "uint128",
-        "internalType": "uint128"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
   },
   {
     "type": "function",
@@ -1209,6 +1291,29 @@ export const arizeBizV2Abi = [
   },
   {
     "type": "function",
+    "name": "setRankConfig",
+    "inputs": [
+      {
+        "name": "_level",
+        "type": "uint8",
+        "internalType": "uint8"
+      },
+      {
+        "name": "_target",
+        "type": "uint128",
+        "internalType": "uint128"
+      },
+      {
+        "name": "_perDay",
+        "type": "uint128",
+        "internalType": "uint128"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "setRoiMultiplier",
     "inputs": [
       {
@@ -1494,19 +1599,6 @@ export const arizeBizV2Abi = [
     "name": "withdraw",
     "inputs": [
       {
-        "name": "_amount",
-        "type": "uint128",
-        "internalType": "uint128"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "withdraw",
-    "inputs": [
-      {
         "name": "_user",
         "type": "address",
         "internalType": "address"
@@ -1555,49 +1647,6 @@ export const arizeBizV2Abi = [
         "name": "",
         "type": "uint8",
         "internalType": "uint8"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "adminRegister",
-    "inputs": [
-      { "name": "_forUser",   "type": "address", "internalType": "address" },
-      { "name": "_referrerId","type": "uint32",  "internalType": "uint32"  },
-      { "name": "_amount",    "type": "uint128", "internalType": "uint128" },
-      { "name": "_dailyRoi",  "type": "uint16",  "internalType": "uint16"  }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "getTxCount",
-    "inputs": [{ "name": "_uid", "type": "uint32", "internalType": "uint32" }],
-    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getTxHistory",
-    "inputs": [
-      { "name": "_uid",    "type": "uint32",  "internalType": "uint32"  },
-      { "name": "_offset", "type": "uint256", "internalType": "uint256" },
-      { "name": "_limit",  "type": "uint256", "internalType": "uint256" }
-    ],
-    "outputs": [
-      {
-        "name": "records",
-        "type": "tuple[]",
-        "internalType": "struct ArizeBizV2.TxRecord[]",
-        "components": [
-          { "name": "amount", "type": "uint128", "internalType": "uint128" },
-          { "name": "from",   "type": "uint32",  "internalType": "uint32"  },
-          { "name": "to",     "type": "uint32",  "internalType": "uint32"  },
-          { "name": "time",   "type": "uint32",  "internalType": "uint32"  },
-          { "name": "txType", "type": "uint8",   "internalType": "uint8"   }
-        ]
       }
     ],
     "stateMutability": "view"

@@ -40,16 +40,32 @@
   let legWeakest = '';
   let legBusy    = false;
 
+  // ── Rank config form ──────────────────────────────────────
+  let rankTargets: (string | number)[] = Array(10).fill('');
+  let rankPerDay: (string | number)[] = Array(10).fill('');
+  let rankBusy = false;
+
   function focus(node: HTMLElement) { node.focus(); }
 
   // ── Helpers ───────────────────────────────────────────────
   function fmt(v: bigint) { return '$' + Number(formatUnits(v, 18)).toFixed(2); }
   function setStatus(msg: string, err = false) { if (err) toast.error(msg); else toast.success(msg); }
 
+  let currentRankTargets: bigint[] = [];
+  let currentRankPerDay: bigint[] = [];
+
   async function loadConfig() {
     loading = true;
     try {
       const wc = getWagmiConfig()!;
+      
+      // Load rank config
+      try {
+        const rankCfg = await readContract(wc, { address: PROXY, abi: arizeBizV2Abi, functionName: 'getRankConfig' }) as unknown as [bigint[], bigint[]];
+        currentRankTargets = rankCfg[0];
+        currentRankPerDay = rankCfg[1];
+      } catch { /* ignore */ }
+      
       const [dR, dr, wf, mi, ma, mul, mw, wm, rm, dl, fr, fu, pl, wl, wst, bc] = await Promise.all([
         readContract(wc, { address: PROXY, abi: arizeBizV2Abi, functionName: 'dRoiPer' }),
         readContract(wc, { address: PROXY, abi: arizeBizV2Abi, functionName: 'directRefPer' }),
@@ -93,6 +109,29 @@
       await loadConfig();
     } catch (e: unknown) { toast.error(e instanceof Error ? e.message : 'Failed', { id }); }
     finally { busy = false; }
+  }
+
+  // ── Rank config setter ────────────────────────────────────
+  async function updateRank(level: number) {
+    if (!rankTargets[level] || !rankPerDay[level]) return;
+    rankBusy = true;
+    const id = toast.loading(`Updating Rank ${level + 1}…`);
+    try {
+      const { parseUnits } = await import('viem');
+      const target = parseUnits(String(rankTargets[level]), 18);
+      const perDay = parseUnits(String(rankPerDay[level]), 18);
+      
+      await writeContractWithGas({
+        address: PROXY, abi: arizeBizV2Abi,
+        functionName: 'setRankConfig', args: [level, target, perDay],
+      });
+      
+      toast.success(`Rank ${level + 1} updated! ✓`, { id });
+      rankTargets[level] = '';
+      rankPerDay[level] = '';
+      await loadConfig();
+    } catch (e: unknown) { toast.error(e instanceof Error ? e.message : 'Failed', { id }); }
+    finally { rankBusy = false; }
   }
 
   function toSeconds(v: string) {
@@ -404,10 +443,57 @@
     </div>
   </section>
 
-  <!-- SECTION 5: Create Bonanza -->
+  <!-- SECTION 5: Rank Configuration -->
   <section>
     <div class="mb-4 flex items-center gap-2">
-      <span class="flex h-7 w-7 items-center justify-center rounded-lg text-sm font-bold text-black" style="background:linear-gradient(135deg,#FF6B9D,#FF8C42)">5</span>
+      <span class="flex h-7 w-7 items-center justify-center rounded-lg text-sm font-bold text-black" style="background:linear-gradient(135deg,#a78bfa,#8b5cf6)">5</span>
+      <h3 class="text-lg font-bold" style="color:#a78bfa">Rank Configuration</h3>
+    </div>
+    <div class="card p-5" style="border-color:rgba(167,139,250,0.2)">
+      <p class="mb-4 text-xs text-text-muted">Set target business and daily salary for each rank level (L1-L10)</p>
+      <div class="space-y-3">
+        {#each [0,1,2,3,4,5,6,7,8,9] as i}
+          <div class="flex flex-wrap items-center gap-3 p-3 rounded-xl" style="background:var(--color-surface-3)">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background:rgba(167,139,250,0.2); color:#a78bfa">
+              L{i+1}
+            </div>
+            <div class="flex-1 min-w-[120px]">
+              <p class="text-xs text-text-muted mb-1">
+                Target ($)
+                {#if currentRankTargets[i]}
+                  <span class="ml-1" style="color:#a78bfa">Current: {fmt(currentRankTargets[i])}</span>
+                {/if}
+              </p>
+              <input type="number" bind:value={rankTargets[i]} placeholder="e.g. 2500"
+                class="w-full rounded-lg border border-border px-3 py-2 text-sm text-text-primary outline-none focus:border-purple-400"
+                style="background:var(--color-surface-4)" />
+            </div>
+            <div class="flex-1 min-w-[100px]">
+              <p class="text-xs text-text-muted mb-1">
+                Per Day ($)
+                {#if currentRankPerDay[i]}
+                  <span class="ml-1" style="color:#a78bfa">Current: {fmt(currentRankPerDay[i])}</span>
+                {/if}
+              </p>
+              <input type="number" bind:value={rankPerDay[i]} placeholder="e.g. 5"
+                class="w-full rounded-lg border border-border px-3 py-2 text-sm text-text-primary outline-none focus:border-purple-400"
+                style="background:var(--color-surface-4)" />
+            </div>
+            <button on:click={() => updateRank(i)} disabled={rankBusy || !rankTargets[i] || !rankPerDay[i]}
+              class="px-4 py-2 rounded-lg text-sm font-bold text-black disabled:opacity-50"
+              style="background:linear-gradient(135deg,#a78bfa,#8b5cf6)">
+              {rankBusy ? '…' : 'Update'}
+            </button>
+          </div>
+        {/each}
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: Create Bonanza -->
+  <section>
+    <div class="mb-4 flex items-center gap-2">
+      <span class="flex h-7 w-7 items-center justify-center rounded-lg text-sm font-bold text-black" style="background:linear-gradient(135deg,#FF6B9D,#FF8C42)">6</span>
       <h3 class="text-lg font-bold" style="color:#FF8C42">Create Bonanza ({cfg.bonanzaCount} existing)</h3>
     </div>
     <div class="card p-5 space-y-4">

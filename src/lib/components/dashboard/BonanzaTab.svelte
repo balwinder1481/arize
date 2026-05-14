@@ -27,11 +27,22 @@
     active: boolean;
     pendingDays: number;
   }
-  const RANK_TARGETS = ['$2,500', '$7,500', '$17,500', '$37,500', '$87,500', '$1,87,500', '$3,87,500', '$8,87,500', '$18,87,500', '$38,87,500'];
-  const RANK_PERDAY  = [25n * BigInt(1e17), 5n * BigInt(1e18), 10n * BigInt(1e18), 20n * BigInt(1e18), 50n * BigInt(1e18), 125n * BigInt(1e18), 250n * BigInt(1e18), 750n * BigInt(1e18), 1500n * BigInt(1e18), 3000n * BigInt(1e18)];
 
   let rankSlots: RankSlot[] = [];
   let rankLoading = false;
+  let rankTargets: bigint[] = [];
+  let rankPerDay: bigint[] = [];
+
+  async function loadRankConfig() {
+    try {
+      const raw = await readContract(wagmiConfig, {
+        address: PROXY, abi: arizeBizV2Abi,
+        functionName: 'getRankConfig', args: [],
+      }) as unknown as [bigint[], bigint[]];
+      rankTargets = raw[0];
+      rankPerDay = raw[1];
+    } catch { /* use empty arrays */ }
+  }
 
   async function loadRankSalaries() {
     if (!userId) return;
@@ -49,8 +60,8 @@
           : 0;
         return {
           rank: i + 1,
-          target: RANK_TARGETS[i],
-          perDay: RANK_PERDAY[i],
+          target: rankTargets[i] ? '$' + Number(rankTargets[i] / BigInt(1e18)).toLocaleString() : '-',
+          perDay: rankPerDay[i] || 0n,
           salaryPerDay: s.salaryPerDay,
           qualifiedAt: Number(s.qualifiedAt),
           expiry: Number(s.expiry),
@@ -63,7 +74,7 @@
     rankLoading = false;
   }
 
-  $: if (userId) loadRankSalaries();
+  $: if (userId) { loadRankConfig().then(() => loadRankSalaries()); }
 
   interface Bonanza {
     id: bigint;

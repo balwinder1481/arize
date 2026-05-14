@@ -28,6 +28,7 @@
   }
 
   function handleWithdraw() {
+    console.log('DEBUG EarningsTab withdrawAmt:', withdrawAmt, typeof withdrawAmt);
     if (!withdrawAmt || !/^[0-9]*\.?[0-9]+$/.test(withdrawAmt)) {
       alert('Please enter a valid amount');
       return;
@@ -37,7 +38,8 @@
       alert('Please enter a positive amount');
       return;
     }
-    dispatch('withdraw', { amount: withdrawAmt });
+    console.log('DEBUG EarningsTab dispatching:', withdrawAmt);
+    dispatch('withdraw', { amount: String(withdrawAmt) });
     withdrawAmt = '';
   }
 </script>
