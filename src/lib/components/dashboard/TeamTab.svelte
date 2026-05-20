@@ -29,7 +29,9 @@
   let regStatus   = '';
   let regErr      = false;
   let regAddrState: 'idle'|'checking'|'free'|'taken' = 'idle';
+  let regRefState:  'idle'|'checking'|'valid'|'invalid' = 'idle';
   let regTimer: ReturnType<typeof setTimeout>;
+  let refTimer: ReturnType<typeof setTimeout>;
 
   // success modal
   let showSuccessModal = false;
@@ -37,7 +39,8 @@
   let successUserId = 0n;
   let successAmt = 0;
 
-  $: if (userId > 0n && !regRefId) regRefId = userId.toString();
+  let refIdUserCleared = false;
+  $: if (userId > 0n && !regRefId && !refIdUserCleared) regRefId = userId.toString();
 
   function isAddr(a: string) { return /^0x[0-9a-fA-F]{40}$/.test(a); }
   function setReg(msg: string, err = false) { regStatus = msg; regErr = err; }
@@ -70,10 +73,24 @@
     }, 600);
   }
 
+  function onRegRefInput() {
+    regRefState = 'idle';
+    if (!regRefId || isNaN(Number(regRefId)) || Number(regRefId) <= 0) return;
+    clearTimeout(refTimer);
+    refTimer = setTimeout(async () => {
+      regRefState = 'checking';
+      try {
+        const addr = await readContract(getWagmiConfig()!, { address: PROXY, abi: arizeBizV2Abi, functionName: 'idToAddr', args: [Number(regRefId)] });
+        regRefState = (addr && addr !== '0x0000000000000000000000000000000000000000') ? 'valid' : 'invalid';
+      } catch { regRefState = 'idle'; }
+    }, 600);
+  }
+
   async function doRegister() {
     if (!isAddr(regAddr))          { toast.error('Invalid wallet address'); return; }
     if (regAddrState === 'taken')  { toast.error('Address already registered'); return; }
-    if (!regRefId || isNaN(Number(regRefId))) { toast.error('Enter a valid referrer ID'); return; }
+    if (!regRefId || isNaN(Number(regRefId)) || Number(regRefId) <= 0) { toast.error('Enter a valid referrer ID'); return; }
+    if (regRefState === 'invalid') { toast.error('Referrer ID does not exist'); return; }
     regBusy = true;
     const id = toast.loading('Approving USDT…');
     try {
@@ -95,6 +112,7 @@
       toast.success(`Registered successfully! $${regAmt} USDT package ✓`, { id });
       showSuccessModal = true;
       regAddr = ''; regAddrState = 'idle'; regStatus = '';
+      refIdUserCleared = false; regRefId = userId.toString();
       loadBalances();
     } catch (e: unknown) {
       toast.error(e instanceof Error ? e.message : 'Registration failed', { id });
@@ -298,8 +316,13 @@
         <span class="flex items-center px-3 text-xs font-bold border-r border-border"
               style="color:#f59e0b; background:var(--color-surface-4)">AB</span>
         <input id="regRefId" bind:value={regRefId} type="number" placeholder="{userId.toString()}"
+               on:input={() => { refIdUserCleared = true; onRegRefInput(); }}
                class="w-full px-3 py-2.5 text-xs outline-none bg-transparent"
                style="color:var(--color-text-primary)" />
+        {#if regRefState === 'checking'}<span class="pr-3 text-xs text-text-muted self-center">…</span>
+        {:else if regRefState === 'valid'}<span class="pr-3 text-xs self-center" style="color:#36FF6F">✓</span>
+        {:else if regRefState === 'invalid'}<span class="pr-3 text-xs self-center" style="color:#FF5833">✗</span>
+        {/if}
       </div>
     </div>
 
